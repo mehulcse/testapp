@@ -1306,7 +1306,7 @@ describe("Validate getOrderedTableColumns function", () => {
   it.only("should test that it returns the columns array from the primaryColumn based on column order and sets sort order details", () => {
     const { getOrderedTableColumns } = derivedProperty;
 
-    const input = {
+    let input = {
       columnOrder: ["name", "id"],
       primaryColumns: {
         id: {
@@ -1324,7 +1324,7 @@ describe("Validate getOrderedTableColumns function", () => {
       },
     };
 
-    const expected = [
+    let expected = [
       {
         index: 0,
         id: "name",
