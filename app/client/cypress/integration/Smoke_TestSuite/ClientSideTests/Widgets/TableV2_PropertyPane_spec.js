@@ -1,4 +1,5 @@
-const ObjectsRegistry = require("../../../../support/Objects/Registry").ObjectsRegistry;
+const ObjectsRegistry = require("../../../../support/Objects/Registry")
+  .ObjectsRegistry;
 let propPane = ObjectsRegistry.PropertyPane;
 const widgetsPage = require("../../../../locators/Widgets.json");
 const commonlocators = require("../../../../locators/commonlocators.json");
@@ -147,7 +148,10 @@ describe("Table Widget V2 property pane feature validation", function() {
       cy.log(tabData);
       expect(tabData).to.not.equal("2736212");
       // Changing the Computed value from "id" to "Email"
-      propPane.UpdatePropertyFieldValue("Computed Value", testdata.currentRowEmail);
+      propPane.UpdatePropertyFieldValue(
+        "Computed Value",
+        testdata.currentRowEmail,
+      );
       cy.wait(500);
       // Reading single cell value of the table and verify it's value.
       cy.readTableV2dataPublish("1", "0").then((tabData2) => {
@@ -163,7 +167,10 @@ describe("Table Widget V2 property pane feature validation", function() {
       cy.log(tabData);
       expect(tabData).to.not.equal("lindsay.ferguson@reqres.in");
       // Email to "orderAmount"
-      propPane.UpdatePropertyFieldValue("Computed Value", testdata.currentRowOrderAmt);
+      propPane.UpdatePropertyFieldValue(
+        "Computed Value",
+        testdata.currentRowOrderAmt,
+      );
       cy.wait(500);
       cy.readTableV2dataPublish("1", "0").then((tabData2) => {
         cy.log(tabData2);
@@ -199,7 +206,10 @@ describe("Table Widget V2 property pane feature validation", function() {
     cy.readTableV2dataPublish("1", "1").then((actualEmail) => {
       cy.changeColumnType("URL");
       // "Image" to "url"
-      propPane.UpdatePropertyFieldValue("Computed Value", testdata.currentRowEmail);
+      propPane.UpdatePropertyFieldValue(
+        "Computed Value",
+        testdata.currentRowEmail,
+      );
       cy.wait(500);
       cy.readTableV2dataPublish("1", "0").then((tabData2) => {
         expect(tabData2)
