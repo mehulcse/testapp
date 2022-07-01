@@ -1,3 +1,5 @@
+const ObjectsRegistry = require("../../../../support/Objects/Registry").ObjectsRegistry;
+let propPane = ObjectsRegistry.PropertyPane;
 const widgetsPage = require("../../../../locators/Widgets.json");
 const commonlocators = require("../../../../locators/commonlocators.json");
 const publish = require("../../../../locators/publishWidgetspage.json");
@@ -145,7 +147,8 @@ describe("Table Widget V2 property pane feature validation", function() {
       cy.log(tabData);
       expect(tabData).to.not.equal("2736212");
       // Changing the Computed value from "id" to "Email"
-      cy.updateComputedValueV2(testdata.currentRowEmail);
+      propPane.UpdatePropertyFieldValue("Computed Value", testdata.currentRowEmail);
+      cy.wait(500);
       // Reading single cell value of the table and verify it's value.
       cy.readTableV2dataPublish("1", "0").then((tabData2) => {
         cy.log(tabData2);
@@ -160,7 +163,8 @@ describe("Table Widget V2 property pane feature validation", function() {
       cy.log(tabData);
       expect(tabData).to.not.equal("lindsay.ferguson@reqres.in");
       // Email to "orderAmount"
-      cy.updateComputedValueV2(testdata.currentRowOrderAmt);
+      propPane.UpdatePropertyFieldValue("Computed Value", testdata.currentRowOrderAmt);
+      cy.wait(500);
       cy.readTableV2dataPublish("1", "0").then((tabData2) => {
         cy.log(tabData2);
         expect(tabData2).to.be.equal(tabData);
@@ -171,7 +175,8 @@ describe("Table Widget V2 property pane feature validation", function() {
     // Changing Column data type from "Number" to "Date"
     cy.changeColumnType("Date");
     // orderAmout to "Moment Date"
-    cy.updateComputedValueV2(testdata.momentDate);
+    propPane.UpdatePropertyFieldValue("Computed Value", testdata.momentDate);
+    cy.wait(500);
     cy.readTableV2dataPublish("1", "1").then((tabData) => {
       expect(tabData).to.not.equal("9.99");
       cy.log("computed value of Date is " + tabData);
@@ -183,10 +188,25 @@ describe("Table Widget V2 property pane feature validation", function() {
 
     cy.changeColumnType("Image");
     // "Moement "date" to "Image"
-    cy.updateComputedValueV2(imageVal);
+    propPane.UpdatePropertyFieldValue("Computed Value", imageVal);
+    cy.wait(500);
     // Verifying the href of the image added.
     cy.readTableV2LinkPublish("1", "0").then((hrefVal) => {
       expect(hrefVal).to.be.contains(imageVal);
+    });
+
+    // Changing Column data type from "Date" to "URl"
+    cy.readTableV2dataPublish("1", "1").then((actualEmail) => {
+      cy.changeColumnType("URL");
+      // "Image" to "url"
+      propPane.UpdatePropertyFieldValue("Computed Value", testdata.currentRowEmail);
+      cy.wait(500);
+      cy.readTableV2dataPublish("1", "0").then((tabData2) => {
+        expect(tabData2)
+          .to.equal("lindsay.ferguson@reqres.in")
+          .to.eq(actualEmail);
+        cy.log("computed value of URL is " + tabData2);
+      });
     });
 
     // change column data type to "icon button"
@@ -197,23 +217,17 @@ describe("Table Widget V2 property pane feature validation", function() {
     cy.getTableV2DataSelector("0", "0").then((selector) => {
       cy.get(selector + " button.bp3-button [data-icon=add]").should("exist");
     });
-
-    // Changing Column data type from "Date" to "URl"
-    cy.readTableV2dataPublish("1", "1").then((actualEmail) => {
-      cy.changeColumnType("URL");
-      // "Image" to "url"
-      cy.updateComputedValueV2(testdata.currentRowEmail);
-      cy.readTableV2dataPublish("1", "0").then((tabData2) => {
-        expect(tabData2)
-          .to.equal("lindsay.ferguson@reqres.in")
-          .to.eq(actualEmail);
-        cy.log("computed value of URL is " + tabData2);
-      });
-    });
   });
 
   it("8. Test to validate text allignment", function() {
     cy.openPropertyPane("tablewidgetv2");
+    cy.get(commonlocators.changeColType)
+      .last()
+      .click();
+    cy.get(".t--dropdown-option")
+      .children()
+      .contains("URL")
+      .click();
     cy.get(".t--property-control-visible span.bp3-control-indicator").click();
     // Verifying Center Alignment
     cy.get(widgetsPage.centerAlign)
