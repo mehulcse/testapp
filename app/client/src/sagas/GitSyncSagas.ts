@@ -42,6 +42,7 @@ import {
   fetchMergeStatusFailure,
   fetchMergeStatusSuccess,
   GenerateSSHKeyPairReduxAction,
+  GenerateSSHKeyPairResponsePayload,
   generateSSHKeyPairSuccess,
   getSSHKeyPairError,
   GetSSHKeyPairReduxAction,
@@ -56,7 +57,6 @@ import {
   setShowRepoLimitErrorModal,
   switchGitBranchInit,
   updateLocalGitConfigSuccess,
-  GenerateSSHKeyPairResponsePayload,
 } from "actions/gitSyncActions";
 
 import { showReconnectDatasourceModal } from "actions/applicationActions";
@@ -94,6 +94,7 @@ import { log } from "loglevel";
 import GIT_ERROR_CODES from "constants/GitErrorCodes";
 import { builderURL } from "RouteBuilder";
 import { APP_MODE } from "../entities/App";
+import { GitDiscardResponse } from "../reducers/uiReducers/gitSyncReducer";
 
 export function* handleRepoLimitReachedError(response?: ApiResponse) {
   const { responseMeta } = response || {};
@@ -704,9 +705,8 @@ function* importAppFromGitSaga(action: ConnectToGitReduxAction) {
             showReconnectDatasourceModal({
               // @ts-expect-error: Type mismatch
               application: response?.data?.application,
-              unConfiguredDatasourceList:
-                // @ts-expect-error: Type mismatch
-                response?.data.unConfiguredDatasourceList,
+              unConfiguredDatasourceList: (response as any)?.data
+                .unConfiguredDatasourceList,
               workspaceId: workspaceIdForImport,
             }),
           );
@@ -850,7 +850,7 @@ export function* deleteBranch({ payload }: ReduxAction<any>) {
 }
 
 function* discardChanges() {
-  let response: ApiResponse | undefined;
+  let response: ApiResponse<GitDiscardResponse>;
   try {
     const appId: string = yield select(getCurrentApplicationId);
     const doPull = true;
@@ -861,15 +861,14 @@ function* discardChanges() {
       getLogToSentryFromResponse(response),
     );
     if (isValidResponse) {
-      yield put(discardChangesSuccess(response?.data));
-      // yield fetchGitStatusSaga();
-      const applicationId: string = yield select(getCurrentApplicationId);
-      const pageId: string = yield select(getCurrentPageId);
+      yield put(discardChangesSuccess(response.data));
+      const applicationId: string = response.data.id;
+      const pageId: string = response.data.pages.filter(
+        (page: any) => page.isDefault,
+      )[0].id;
       localStorage.setItem("GIT_DISCARD_CHANGES", "success");
-      window.open(
-        builderURL({ applicationId: applicationId, pageId: pageId }),
-        "_self",
-      );
+      const branch = response.data.gitApplicationMetadata.branchName;
+      window.open(builderURL({ applicationId, pageId, branch }), "_self");
     }
   } catch (error) {
     yield put(discardChangesFailure({ error }));
