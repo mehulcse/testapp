@@ -1237,7 +1237,7 @@ describe("Validate getSelectedRows function", () => {
 });
 
 describe("Validate getOrderedTableColumns function", () => {
-  it.only("should test tht it returns the columns array from the primaryColumn", () => {
+  it("should test tht it returns the columns array from the primaryColumn", () => {
     const { getOrderedTableColumns } = derivedProperty;
 
     const input = {
@@ -1270,7 +1270,7 @@ describe("Validate getOrderedTableColumns function", () => {
     expect(getOrderedTableColumns(input, moment, _)).toStrictEqual(expected);
   });
 
-  it.only("should test that it returns the columns array from the primaryColumn based on column order", () => {
+  it("should test that it returns the columns array from the primaryColumn based on column order", () => {
     const { getOrderedTableColumns } = derivedProperty;
 
     const input = {
@@ -1303,7 +1303,7 @@ describe("Validate getOrderedTableColumns function", () => {
     expect(getOrderedTableColumns(input, moment, _)).toStrictEqual(expected);
   });
 
-  it.only("should test that it returns the columns array from the primaryColumn based on column order and sets sort order details", () => {
+  it("should test that it returns the columns array from the primaryColumn based on column order and sets sort order details", () => {
     const { getOrderedTableColumns } = derivedProperty;
 
     let input = {
@@ -1373,7 +1373,7 @@ describe("Validate getOrderedTableColumns function", () => {
     expect(getOrderedTableColumns(input, moment, _)).toStrictEqual(expected);
   });
 
-  it.only("should test that it removes the column with empty name", () => {
+  it("should test that it removes the column with empty name", () => {
     const { getOrderedTableColumns } = derivedProperty;
 
     const input = {
