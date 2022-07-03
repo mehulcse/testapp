@@ -141,7 +141,7 @@ describe("Table Widget V2 property pane feature validation", function() {
 
     // disabled icon btn
     cy.CheckWidgetProperties(commonlocators.disableCheckbox);
-    cy.getTableV2DataSelector("0", "5").then((selector) => {
+    cy.getTableV2DataSelector("0", "4").then((selector) => {
       cy.get(selector + " button.bp3-disabled").should("exist");
     });
     cy.UncheckWidgetProperties(commonlocators.disableCheckbox);
@@ -158,7 +158,7 @@ describe("Table Widget V2 property pane feature validation", function() {
     // click on Add new Column.
     cy.get(".t--add-column-btn").click();
     //Open New Custom Column
-    cy.editColumn("customColumn2");
+    cy.editColumn("customColumn1");
     // Change Column type to icon Button
     cy.changeColumnType("Menu Button");
     //Changing the text on the Menu Button

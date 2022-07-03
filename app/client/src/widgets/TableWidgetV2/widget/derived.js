@@ -67,7 +67,8 @@ export default {
      * It should have updated values.
      */
     if (index > -1) {
-      triggeredRow = { ...rows[index] };
+      const row = rows.find((row) => row.__originalIndex__ === index);
+      triggeredRow = { ...row };
     } else {
       /*
        *  If triggeredRowIndex is not a valid index, triggeredRow should
